@@ -47,6 +47,6 @@ def _update_settings(source_folder, site_name):
 
 def _update_static_files(source_folder):
     run(
-        f'cd {source_folder}'
+        f'cd {source_folder}/superlists'
         ' && python manage.py collectstatic --noinput'
     )
