@@ -61,7 +61,7 @@ class NewVistorTest(FunctionlTest):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_List_table('1: Buy milk')
+        self.wait_for_row_in_list_table('1: Buy milk')
 
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
@@ -71,18 +71,4 @@ class NewVistorTest(FunctionlTest):
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy milk', page_text)
 
-    def wait_for_row_in_List_table(self, row_text):
-        start_time = time.time()
-        while True:
-            try:
-                self.check_for_row_in_list_table(row_text)
-                return
-            except(AssertionError, WebDriverException) as e:
-                if time.time() - start_time > self.MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
 
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
