@@ -10,7 +10,7 @@ REPO_URL = "https://github.com/nilmiao/superlists.git"
 
 def deploy():
     site_folder = f'/root/sites/superlists.miaogodthink.top'
-    source_folder = site_folder + '/source/superlists'
+    source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
     _update_settings(source_folder, env.host)
@@ -31,13 +31,13 @@ def _get_latest_source(source_folder):
 
 
 def _update_settings(source_folder, site_name):
-    settings_path = source_folder + '/superlists/settings.py'
+    settings_path = source_folder + '/superlists/superlists/settings.py'
     sed(settings_path, "DEBUG = True", "DEBUG = False")
     sed(settings_path,
         'ALLOWED_HOSTS = .+$',
         f'ALLOWED_HSOTS = ["{site_name}"]'
         )
-    secret_key_file = source_folder + '/superlists/secret_key.py'
+    secret_key_file = source_folder + '/superlists/superlists/secret_key.py'
     if not exists(secret_key_file):
         chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
         key = ''.join(random.SystemRandom().choice(chars) for _ in range(50))
@@ -47,6 +47,6 @@ def _update_settings(source_folder, site_name):
 
 def _update_static_files(source_folder):
     run(
-        f'cd {source_folder}'
+        f'cd {source_folder}/superlists'
         ' && python manage.py collectstatic --noinput'
     )
