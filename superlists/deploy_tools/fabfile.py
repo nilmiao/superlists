@@ -14,12 +14,12 @@ def deploy():
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
     _update_settings(source_folder, env.host)
-    _update_static_files(source_folder)
 
 
 def _create_directory_structure_if_necessary(site_folder):
-    run(f'mkdir -p {site_folder}/source')
-
+    run(f'mkdir -p {site_folder}/source'
+        # f'mkdir -p {site_folder}/static'
+        )
 
 def _get_latest_source(source_folder):
     if exists(source_folder + '/.git'):
@@ -45,8 +45,8 @@ def _update_settings(source_folder, site_name):
     append(settings_path, '\nfrom .secret_key import SECRET_KEY')
 
 
-def _update_static_files(source_folder):
-    run(
-        f'cd {source_folder}/superlists'
-        ' && python manage.py collectstatic --noinput'
-    )
+# def _update_static_files(source_folder):
+#     run(
+#         f'cd {source_folder}/superlists'
+#         ' && python manage.py collectstatic --noinput'
+#     )
