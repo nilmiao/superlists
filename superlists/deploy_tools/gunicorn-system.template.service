@@ -1,0 +1,11 @@
+[Unit]
+Description=Gunicorn server for superlists.miaogodthink.top
+
+[Service]
+Restart=on-failure
+User=elspeth
+WorkingDirectory=/home/sites/superlists.miaogodthink.top/source
+ExecStart=gunicorn --bind unix:/tmp/superlists.miaogodthink.top.socket superlists.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
