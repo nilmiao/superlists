@@ -18,8 +18,7 @@ def deploy():
 
 
 def _create_directory_structure_if_necessary(site_folder):
-    for subfolder in ('source'):
-        run(f'mkdir -p {site_folder}/{subfolder}')
+    run(f'mkdir -p {site_folder}/source')
 
 
 def _get_latest_source(source_folder):
