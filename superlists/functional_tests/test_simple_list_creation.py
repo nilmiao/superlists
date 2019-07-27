@@ -1,32 +1,11 @@
 # -*- coding: utf-8 -*-
 # Created by nil_mmm
 import time
-from unittest import skip
-from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
-
-
-class FunctionlTest(StaticLiveServerTestCase):
-    def setUp(self):
-        self.option = webdriver.ChromeOptions()
-        self.option.add_argument('--headless')
-        self.option.add_argument('--no-sandbox')
-        self.option.add_argument('--disable-extensions')
-        self.option.add_argument('--disable-gpu')
-        self.option.add_argument('--disable-dev-shm-usage')
-        # self.browser = webdriver.Chrome('/home/chromedriver',chrome_options=self.option)
-        self.browser = webdriver.Chrome(chrome_options=self.option)
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-        self.MAX_WAIT = 10
-
-    def tearDown(self):
-        self.browser.quit()
+from .base import FunctionlTest
 
 
 class NewVistorTest(FunctionlTest):
@@ -107,32 +86,3 @@ class NewVistorTest(FunctionlTest):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
-
-
-class LayoutAndStylingTest(FunctionlTest):
-    def test_layout_and_styling(self):
-        # Edith goes to the home page
-        self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
-
-        # She notices the input box is nicely centered
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=5
-        )
-
-        inputbox.send_keys('testing\n')
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=5
-        )
-
-
-class ItemValidationTest(FunctionlTest):
-    @skip
-    def test_cannot_add_empty_list_items(self):
-        self.fail('wirte me!')
