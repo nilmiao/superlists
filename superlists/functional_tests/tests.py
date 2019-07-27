@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Created by nil_mmm
 import time
+from unittest import skip
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -9,7 +10,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
 
 
-class NewVistorTest(StaticLiveServerTestCase):
+class FunctionlTest(StaticLiveServerTestCase):
     def setUp(self):
         self.option = webdriver.ChromeOptions()
         self.option.add_argument('--headless')
@@ -17,8 +18,8 @@ class NewVistorTest(StaticLiveServerTestCase):
         self.option.add_argument('--disable-extensions')
         self.option.add_argument('--disable-gpu')
         self.option.add_argument('--disable-dev-shm-usage')
-        self.browser = webdriver.Chrome('/home/chromedriver',chrome_options=self.option)
-        #self.browser = webdriver.Chrome(chrome_options=self.option)
+        # self.browser = webdriver.Chrome('/home/chromedriver',chrome_options=self.option)
+        self.browser = webdriver.Chrome(chrome_options=self.option)
         staging_server = os.environ.get('STAGING_SERVER')
         if staging_server:
             self.live_server_url = 'http://' + staging_server
@@ -27,22 +28,8 @@ class NewVistorTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def wait_for_row_in_List_table(self, row_text):
-        start_time = time.time()
-        while True:
-            try:
-                self.check_for_row_in_list_table(row_text)
-                return
-            except(AssertionError, WebDriverException) as e:
-                if time.time() - start_time > self.MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
 
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
-
+class NewVistorTest(FunctionlTest):
     def test_can_start_a_list_and_retrieve_it_later(self):
         self.browser.get(self.live_server_url)
 
@@ -85,7 +72,8 @@ class NewVistorTest(StaticLiveServerTestCase):
         self.assertRegex(edith_list_url, '/lists/.+')
 
         self.browser.quit()
-        self.browser = webdriver.Chrome('/home/chromedriver',chrome_options=self.option)
+        # self.browser = webdriver.Chrome('/home/chromedriver',chrome_options=self.option)
+        self.browser = webdriver.Chrome(chrome_options=self.option)
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
@@ -104,6 +92,24 @@ class NewVistorTest(StaticLiveServerTestCase):
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy milk', page_text)
 
+    def wait_for_row_in_List_table(self, row_text):
+        start_time = time.time()
+        while True:
+            try:
+                self.check_for_row_in_list_table(row_text)
+                return
+            except(AssertionError, WebDriverException) as e:
+                if time.time() - start_time > self.MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
+
+class LayoutAndStylingTest(FunctionlTest):
     def test_layout_and_styling(self):
         # Edith goes to the home page
         self.browser.get(self.live_server_url)
@@ -124,3 +130,9 @@ class NewVistorTest(StaticLiveServerTestCase):
             512,
             delta=5
         )
+
+
+class ItemValidationTest(FunctionlTest):
+    @skip
+    def test_cannot_add_empty_list_items(self):
+        self.fail('wirte me!')
