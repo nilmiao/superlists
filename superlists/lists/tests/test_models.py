@@ -3,6 +3,7 @@ from django.urls import resolve
 from django.http import HttpRequest
 from lists.models import Item, List
 from lists.views import home_page
+from django.core.exceptions import ValidationError
 
 
 # Create your tests here.
@@ -40,6 +41,12 @@ class ListAndItemModelTest(TestCase):
         self.assertEqual(second_saved_item.text, 'Item the second')
         self.assertEqual(second_saved_item.list, list_)
 
+    def test_cannot_save_empty_list_items(self):
+        list_ = List.objects.create()
+        item = Item(list=list_,text='')
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
 
 class NewListTest(TestCase):
     def test_can_save_a_POST_request_to_an_existing_list(self):
